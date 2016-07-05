@@ -56,10 +56,15 @@ class DynamoDB {
     }
 
     // Creating Data
-    putItem(data) {
+    putItem(data, ...args) {
         // appending auto generate key
         data.id = uuid.v4()
+
+        // populate the Item - using mapValues to prevent M at start
         this.body.Item = _.mapValues(data , converter.input)
+
+        // append request parameters
+        this.body = Object.assign(this.body, ...args)
 
         this.options.headers['X-Amz-Target'] += 'PutItem'
         return this._exec()
