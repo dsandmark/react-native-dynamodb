@@ -28,22 +28,24 @@ class DynamoDB {
         let signature = new AwsSignature(),
             body = JSON.stringify(this.body)
 
-        this.options.headers['X-Amz-Date'] = signature.formatDateTime(new Date())
+        this.headers['X-Amz-Date'] = signature.formatDateTime(new Date())
         signature.setParams({
             path: '/',
             method: 'post',
             service: 'dynamodb',
-            headers: this.options.headers,
+            headers: this.headers,
             region: this.region,
             credentials: this.credentials,
             body
         });
 
         // TODO: add header 'Content-Length': '<PayloadSizeBytes>',
-        this.options.headers['Authorization'] = signature.getAuthorizationHeader().Authorization
+        this.headers['X-Amz-Target'] = `DynamoDB_${this.version}.${this.headers['X-Amz-Target']}`
+        this.headers['Authorization'] = signature.getAuthorizationHeader().Authorization
+
         return fetch(`https://dynamodb.${this.region}.amazonaws.com`, {
             method: 'POST',
-            headers: this.options.headers,
+            headers: this.headers,
             body
         })
     }
@@ -66,7 +68,7 @@ class DynamoDB {
         // append request parameters
         this.body = Object.assign(this.body, ...args)
 
-        this.options.headers['X-Amz-Target'] += 'PutItem'
+        this.headers['X-Amz-Target'] = 'PutItem'
         return this._exec()
     }
 
@@ -88,7 +90,16 @@ class DynamoDB {
     Scan() {}
 
     // Updating Data
-    UpdateItem() {}
+    UpdateItem(key, ...args) {
+        // populate the Key
+        this.body.Key = _.mapValues(key , converter.input)
+
+        // append request parameters
+        this.body = Object.assign(this.body, ...args)
+
+        this.headers['X-Amz-Target'] = 'UpdateItem'
+        return this._exec()
+    }
 
     // Deleting Data
     DeleteItem() {}
