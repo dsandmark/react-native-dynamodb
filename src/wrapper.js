@@ -73,7 +73,16 @@ class DynamoDB {
     BatchWriteItem() {}
 
     // Reading Data
-    GetItem() {}
+    GetItem(key, ...args) {
+        // populate the Key
+        this.body.Key = _.mapValues(key , converter.input)
+
+        // append request parameters
+        this.body = Object.assign(this.body, ...args)
+
+        this.headers['X-Amz-Target'] = 'GetItem'
+        return this._exec()
+    }
     BatchGetItem() {}
     Query() {}
     Scan() {}
