@@ -56,7 +56,7 @@ class DynamoDB {
     }
 
     // Creating Data
-    putItem(data, ...args) {
+    PutItem(data, ...args) {
         // appending auto generate key
         data.id = uuid.v4()
 

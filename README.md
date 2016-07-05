@@ -21,7 +21,7 @@ let dynamodb = DynamoDB.init({
     // version: '20120810' - default, optional
 })
 
-dynamodb.table('pirates').putItem(
+dynamodb.table('pirates').PutItem(
 {
     name: 'Jack Sparrow',
     age: 30,
