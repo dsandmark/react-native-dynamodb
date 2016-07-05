@@ -21,17 +21,21 @@ let dynamodb = DynamoDB.init({
     // version: '20120810' - default, optional
 })
 
-dynamodb.table('pirates').putItem({
+dynamodb.table('pirates').putItem(
+{
     name: 'Jack Sparrow',
     age: 30,
     captain: true
+},
+{
+    ConditionExpression: "last_movie <> :movie",
+    ExpressionAttributeValues: {
+        ":movie": {"S": "Pirates of the Caribbean: On Stranger Tides"}
+    }
 })
-.then((response) => response.text())
-.then((response) => {
-    console.log(JSON.parse(response)) // AWS object response
-})
+.then((response) => console.log(response)) // AWS object response
 .catch((error) => {
-    console.log(error);
+    console.log(error)
 })
 ```
 
