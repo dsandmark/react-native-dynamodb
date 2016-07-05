@@ -1,7 +1,7 @@
 import AwsSignature from 'react-native-aws-signature'
 import _ from 'lodash'
 import uuid from 'uuid'
-import converter from './converter'
+import Converter from './converter'
 
 class DynamoDB {
 
@@ -14,13 +14,10 @@ class DynamoDB {
         this.credentials = config.credentials
         this.region = config.region || 'us-east-1'
         this.version = config.version || '20120810'
-        this.options = {
-            headers: {
-                'Host': 'dynamodb.amazonaws.com',
-                // 'User-Agent': '<UserAgentString>',
-                'Content-Type': 'application/x-amz-json-1.0',
-                'X-Amz-Target': `DynamoDB_${this.version}.`
-            }
+        this.headers = {
+            'Host': 'dynamodb.amazonaws.com',
+            // 'User-Agent': '<UserAgentString>',
+            'Content-Type': 'application/x-amz-json-1.0'
         }
     }
 
@@ -63,7 +60,7 @@ class DynamoDB {
         data.id = uuid.v4()
 
         // populate the Item - using mapValues to prevent M at start
-        this.body.Item = _.mapValues(data , converter.input)
+        this.body.Item = _.mapValues(data , Converter.input)
 
         // append request parameters
         this.body = Object.assign(this.body, ...args)
@@ -77,7 +74,7 @@ class DynamoDB {
     // Reading Data
     GetItem(key, ...args) {
         // populate the Key
-        this.body.Key = _.mapValues(key , converter.input)
+        this.body.Key = _.mapValues(key , Converter.input)
 
         // append request parameters
         this.body = Object.assign(this.body, ...args)
@@ -92,7 +89,7 @@ class DynamoDB {
     // Updating Data
     UpdateItem(key, ...args) {
         // populate the Key
-        this.body.Key = _.mapValues(key , converter.input)
+        this.body.Key = _.mapValues(key , Converter.input)
 
         // append request parameters
         this.body = Object.assign(this.body, ...args)
@@ -112,4 +109,4 @@ class DynamoDB {
     GetRecords() {}
 }
 
-module.exports = DynamoDB
+export { DynamoDB, Converter }
