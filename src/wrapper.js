@@ -17,7 +17,7 @@ class DynamoDB {
         this.headers = {
             'Host': 'dynamodb.amazonaws.com',
             // 'User-Agent': '<UserAgentString>',
-            'Content-Type': 'application/x-amz-json-1.0'
+            'Content-Type': 'application/x-amz-json-1.0; charset=utf-8'
         }
     }
 
@@ -99,7 +99,16 @@ class DynamoDB {
     }
 
     // Deleting Data
-    DeleteItem() {}
+    DeleteItem() {
+        // populate the Key
+        this.body.Key = _.mapValues(key , Converter.input)
+
+        // append request parameters
+        this.body = Object.assign(this.body, ...args)
+
+        this.headers['X-Amz-Target'] = 'DeleteItem'
+        return this._exec()
+    }
     BatchWriteItem() {}
 
     // DynamoDB Streams
