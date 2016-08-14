@@ -23,7 +23,8 @@ class DynamoDB {
 
     _exec() {
         let signature = new AwsSignature(),
-            body = JSON.stringify(this.body)
+        body = JSON.stringify(this.body)
+        this.body = {}
 
         this.headers['X-Amz-Date'] = signature.formatDateTime(new Date())
         signature.setParams({
@@ -82,9 +83,29 @@ class DynamoDB {
         this.headers['X-Amz-Target'] = 'GetItem'
         return this._exec()
     }
-    BatchGetItem() {}
+
+    // Returns the attributes of one or more items
+    BatchGetItem(keys, ...args) {
+        // populate the Keys
+        this.body.RequestItems = keys
+
+        // append request parameters
+        this.body = Object.assign(this.body, ...args)
+
+        this.headers['X-Amz-Target'] = 'BatchGetItem'
+        return this._exec()
+    }
+
     Query() {}
-    Scan() {}
+
+    // One or more items and item attributes by accessing every item in a table or a secondary index.
+    Scan(...args) {
+        // append request parameters
+        this.body = Object.assign(this.body, ...args)
+
+        this.headers['X-Amz-Target'] = 'Scan'
+        return this._exec()
+    }
 
     // Updating Data
     UpdateItem(key, ...args) {
