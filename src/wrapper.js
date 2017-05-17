@@ -1,6 +1,5 @@
 import AwsSignature from 'react-native-aws-signature'
 import _ from 'lodash'
-import uuid from 'uuid'
 import Converter from './converter'
 
 class DynamoDB {
@@ -57,9 +56,6 @@ class DynamoDB {
 
     // Creating Data
     PutItem(data, ...args) {
-        // appending auto generate key
-        data.id = uuid.v4()
-
         // populate the Item - using mapValues to prevent M at start
         this.body.Item = _.mapValues(data , Converter.input)
 
