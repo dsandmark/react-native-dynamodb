@@ -1,5 +1,5 @@
 {
-  "name": "react-native-dynamodb",
+  "name": "dsandmark-react-native-dynamodb",
   "version": "0.0.6",
   "description": "API wrapper to access DynamoDB from React Native",
   "dependencies": {
